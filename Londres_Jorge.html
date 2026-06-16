@@ -40,10 +40,19 @@ h1 span{color:var(--gold);font-style:italic;font-weight:500;}
 .tag-pay{background:#E8DAEF;color:#6C3483;}
 .tag-eat{background:#FDEBD0;color:#A04000;}
 .tag-sofia{background:#EBD5F5;color:#6C3483;}
+.tag-key{background:#FDFDE0;color:#7D6608;}
+.tag-opt{background:#F0F0F0;color:#555555;}
 .stop .btn-row{display:flex;gap:.65rem;align-items:center;margin-top:.55rem;}
 .stop a.go{display:inline-flex;align-items:center;gap:.25rem;font-size:.76rem;font-weight:700;color:var(--navy);text-decoration:none;border-bottom:1.5px solid var(--gold);}
 .stop.special{border-left-color:var(--gold);background:linear-gradient(135deg,var(--cream) 0%,#FFF6E0 100%);}
 .stop.special .badge{background:var(--gold);color:var(--navy-deep);}
+.stop.optional{opacity:.85;border-left-style:dashed;}
+.infografia{background:var(--navy);border-radius:var(--radius);margin:.1rem 0 .1rem;padding:.7rem .8rem;display:grid;grid-template-columns:1fr 1fr;gap:.7rem;align-items:start;border:1.5px solid var(--accent);}
+.infografia .inf-title{font-family:var(--ff);font-weight:600;font-size:.85rem;color:var(--gold);grid-column:1/-1;margin-bottom:.1rem;}
+.infografia ol{padding-left:1.1rem;font-size:.76rem;line-height:1.5;color:var(--cream);}
+.infografia ol li{margin-bottom:.2rem;}
+.infografia .inf-img{width:100%;border-radius:8px;display:block;}
+.infografia .inf-cap{grid-column:1/-1;font-size:.68rem;color:var(--muted);font-style:italic;margin-top:.2rem;text-align:center;}
 .lmarker{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--fm);font-weight:700;font-size:.76rem;border:2px solid var(--cream);box-shadow:0 1px 4px rgba(0,0,0,.35);}
 .lmarker.home{background:var(--cream);color:var(--navy);border-color:var(--gold);font-size:.95rem;}
 .leaflet-popup-content{font-family:var(--fb);font-size:.8rem;line-height:1.4;}
@@ -53,7 +62,7 @@ footer{padding:1.2rem 1.1rem .4rem;text-align:center;font-family:var(--fm);font-
 </head>
 <body>
 <header class="top">
-  <p class="eyebrow">15&mdash;18 JUL 2025 &middot; BASE: MARLOW HOUSE, PADDINGTON W2</p>
+  <p class="eyebrow">15&mdash;18 JUL 2025 &middot; BASE: MARLOW HOUSE · PADDINGTON W2 6HL</p>
   <h1>Londres<br><span>Jorge & familia</span></h1>
 </header>
 <nav class="tabs" id="tabs"></nav>
@@ -61,71 +70,154 @@ footer{padding:1.2rem 1.1rem .4rem;text-align:center;font-family:var(--fm);font-
 <div class="banner" id="banner"></div>
 <div id="map"></div>
 <main class="schedule" id="schedule"></main>
-<footer>🧭 "Desde..." abre Google Maps con ruta caminando desde la parada anterior &middot; ✏️ = nota de Sofía</footer>
+<footer>🧭 "Desde..." abre Google Maps caminando · ✏️ Sofía · borde punteado = opcional</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" crossorigin=""></script>
 <script>
-const HOME={lat:51.5177,lng:-0.1762,name:"Marlow House — Paddington W2"};
+const HOME={lat:51.5177,lng:-0.1762,name:"Marlow House — Paddington W2 6HL"};
 
 const DAYS=[
   {
-    id:1, date:"Mié 15/7", title:"Paddington → Notting Hill", subtitle:"Hyde Park · Portobello · Little Venice",
+    id:1, date:"Mié 15/7", title:"Llegada desde París", subtitle:"Eurostar · Elizabeth Line · Primera noche en Little Venice",
     color:"#4F8FC4",
-    banner:"🚲 Día que empieza caminando desde el hotel. Alquilar bicicletas Santander Cycles en Hyde Park. Las fotos bonitas de Notting Hill NO están todas juntas — hay que caminar el barrio.",
+    banner:"🚄 Eurostar llega a St Pancras ~18:30. Tomar la Elizabeth Line directa hasta Paddington: 10 min, sin cambios. Primera noche tranquila — The Bridge House está sobre el canal de Little Venice, a 5 min del hotel.",
     stops:[
-      {time:"8:30",  title:"Desayuno — GAIL's Bakery Paddington Square", address:"Paddington Square, London W2", notes:"Sofía recomienda: ideal para comprar algo para llevar y comer en Hyde Park. Alternativa: Venice London (algo más británico y sentado).", lat:51.5163, lng:-0.1762, tags:["eat","sofia"]},
-      {time:"9:15",  title:"Hyde Park — Serpentine Lake", address:"Hyde Park, London W2", notes:"10 min caminando del hotel. Alquilar bicicletas Santander Cycles. Recorrer el lago Serpentine, Italian Gardens y la zona de Kensington Gardens.", lat:51.5073, lng:-0.1641, tags:["free"]},
-      {time:"10:30", title:"Kensington Gardens + Peter Pan statue", address:"Kensington Gardens, London W8", notes:"Continuación natural desde Hyde Park en bici o caminando. La estatua de Peter Pan y los jardines reales. Kensington Palace está a la vista (cerrado lunes).", lat:51.5075, lng:-0.1828, tags:["free"]},
-      {time:"11:30", title:"Notting Hill — Calles del barrio", address:"Notting Hill, London W11", notes:"✏️ Sofía: caminar Lancaster Road (colorida), Westbourne Park Road (elegante) y Elgin Crescent (película londinense). Las fotos famosas NO están en un solo punto — hay que recorrer el barrio.", lat:51.5160, lng:-0.2090, tags:["sofia"]},
-      {time:"13:00", title:"Portobello Road Market", address:"Portobello Rd, London W11", notes:"El sábado 18/7 es el mejor día para el mercado lleno, pero los miércoles también hay puestos. Recuerdos, antigüedades, ropa, comida y ambiente callejero. En familia funciona muy bien.", lat:51.5147, lng:-0.2059, tags:[]},
-      {time:"14:30", title:"Almuerzo — Farm Girl Notting Hill", address:"59A Portobello Rd, London W11 3DB", notes:"✏️ Sofía recomienda. Brunch / café muy lindo en el barrio. Alternativas: Eggslut (rápido) o Dishoom (especial, requiere reserva previa).", lat:51.5148, lng:-0.2011, tags:["eat","sofia"]},
-      {time:"16:00", title:"OPCIÓN: Oxford Street / Soho", address:"Oxford Circus, London W1", notes:"Metro desde Notting Hill Gate → Oxford Circus (Central Line, 4 paradas). Oxford Street + Soho: más movimiento, tiendas, ciudad grande. Opcional según energía del grupo.", lat:51.5152, lng:-0.1415, tags:[]},
-      {time:"19:30", title:"Little Venice (cierre del día)", address:"Blomfield Rd, London W9", notes:"10 min caminando del hotel hacia el norte. Canal con barcas de colores, muy pintoresco. Perfecto para el cierre tranquilo del primer día.", lat:51.5228, lng:-0.1837, tags:["free"]}
+      {time:"18:30", title:"Llegada — St Pancras International", address:"Euston Rd, London N1C 4QP",
+       notes:"Llegada del Eurostar desde Gare du Nord. Control de pasaportes y aduana: calcular 30-40 min para salir. El hall de St Pancras es espectacular — vale mirarlo un momento antes de salir.",
+       lat:51.5309, lng:-0.1233, tags:[]},
+      {time:"19:15", title:"Elizabeth Line → Paddington", address:"King's Cross St. Pancras Station",
+       notes:"Línea morada (Elizabeth Line) desde King's Cross St. Pancras hasta Paddington. 10 min directo, sin cambios. Pagar con tarjeta o celular tocando el torniquete.",
+       lat:51.5163, lng:-0.1755, tags:["key"],
+       infografia:{
+         title:"De St Pancras a Paddington — ¡Así de fácil!",
+         steps:["Salís del Eurostar con pasaporte y equipaje","Caminata por túnel 5-7 min hasta Elizabeth Line / Farringdon","Subís al tren Elizabeth Line → dirección Paddington","Tocás con el celular en el torniquete al subir","¡En 10 min llegás a Paddington!"],
+         caption:"La Elizabeth Line sale del mismo edificio de St Pancras. Sin transbordos."
+       }},
+      {time:"19:30", title:"Check-in — Marlow House", address:"Hallfield Estate, Westminster, W2 6HL",
+       notes:"5 min caminando desde Paddington Station. Dejar maletas y refrescarse. Base para los próximos 3 días.",
+       lat:51.5177, lng:-0.1762, tags:[]},
+      {time:"20:30", title:"Cena — The Bridge House", address:"13 Westbourne Terrace Road, W2 6NG",
+       notes:"Pub histórico de 1848 directamente sobre el canal de Little Venice, a 5 min del hotel. Terraza con vista al agua. Interiores con chandeliers, chimenea y cerveza artesanal. Cocina británica clásica: fish & chips, ale pie, Sunday roast. Canal Café Theatre en el piso de arriba.",
+       lat:51.5228, lng:-0.1851, tags:["eat"], special:true},
+      {time:"22:00", title:"Paseo — Little Venice", address:"Blomfield Rd, London W9 2PF",
+       notes:"El canal de Regent's con barcas de colores iluminadas de noche. Paseo tranquilo de 20 min para cerrar el día — ya están en la zona del pub.",
+       lat:51.5228, lng:-0.1837, tags:["free"]},
     ]
   },
   {
-    id:2, date:"Jue 16/7", title:"Londres Icónico", subtitle:"Westminster · Buckingham · South Bank · Covent Garden",
+    id:2, date:"Jue 16/7", title:"Notting Hill + Museos + Hyde Park", subtitle:"Salida 9:30 desde el hotel",
+    color:"#5BAD7E",
+    banner:"🎨 Día largo: Notting Hill de mañana, British Museum (entrada 15:20) al mediodía y Hyde Park/Kensington al final. Las fotos bonitas de Notting Hill NO están todas juntas — hay que caminar el barrio.",
+    stops:[
+      {time:"9:30",  title:"Desayuno — GAIL's Bakery Paddington Square", address:"Paddington Square, London W2 1HQ",
+       notes:"✏️ Sofía: ideal para comprar algo para llevar y comer en el barrio. Alternativa: Venice London para desayuno sentado y típico británico.",
+       lat:51.5163, lng:-0.1762, tags:["eat","sofia"]},
+      {time:"10:00", title:"Notting Hill — Calles del barrio", address:"Notting Hill, London W11",
+       notes:"✏️ Sofía: caminar Lancaster Road (colorida), Westbourne Park Road (elegante) y Elgin Crescent (película londinense). Las fotos famosas NO están en un solo punto — recorrer con calma.",
+       lat:51.5160, lng:-0.2090, tags:["sofia"]},
+      {time:"11:30", title:"Portobello Road Market", address:"Portobello Rd, London W11 1LU",
+       notes:"El momento más entretenido de la mañana. Antigüedades, discos de vinilo, ropa vintage, recuerdos y comida callejera. En familia funciona muy bien: cada uno explora a su ritmo.",
+       lat:51.5147, lng:-0.2059, tags:[]},
+      {time:"13:00", title:"Almuerzo — Farm Girl Notting Hill", address:"59A Portobello Rd, London W11 3DB",
+       notes:"✏️ Sofía recomienda. Brunch/café muy lindo en el barrio. Alternativas: Eggslut (rápido) o Dishoom (especial, requiere reserva online).",
+       lat:51.5148, lng:-0.2011, tags:["eat","sofia"]},
+      {time:"15:00", title:"The British Museum", address:"Great Russell St, London WC1B 3DG",
+       notes:"GRATIS y obligatorio. Metro desde Notting Hill Gate → Holborn (Central Line, 15 min). Momias egipcias, Piedra de Roseta, reliquias de toda la historia humana. Las entradas tienen turno de ingreso a las 15:20 — llegar con unos minutos de anticipación. Calcular 2 horas mínimo adentro.",
+       lat:51.5194, lng:-0.1270, tags:["free"]},
+      {time:"17:00", title:"Kensington Gardens + Kensington Palace", address:"Kensington Gardens, London W8 4PX",
+       notes:"Metro desde Holborn → High Street Kensington. Jardines reales contiguos al parque. Estatua de Peter Pan. Kensington Palace visible desde afuera — entrar ~£21/adulto (cerrado lunes).",
+       lat:51.5075, lng:-0.1828, tags:["free"]},
+      {time:"18:30", title:"Hyde Park — Serpentine Lake", address:"Hyde Park, London W2 2UH",
+       notes:"Caminando desde Kensington Gardens — son contiguos. Recorrer el lago Serpentine al atardecer. En julio hay luz hasta las 21:00. Bicicletas Santander Cycles disponibles.",
+       lat:51.5073, lng:-0.1641, tags:["free"]},
+      {time:"20:00", title:"Vuelta al departamento", address:"Marlow House, Hallfield Estate, W2 6HL",
+       notes:"10 min caminando desde Hyde Park. Cena libre en la zona de Paddington — supermercados y opciones variadas en el barrio.",
+       lat:51.5177, lng:-0.1762, tags:[]},
+    ]
+  },
+  {
+    id:3, date:"Vie 17/7", title:"Londres Icónico", subtitle:"Westminster · South Bank · Covent Garden · West End",
     color:"#E07B54",
-    banner:"👑 Salir a las 9:30 desde Paddington. Llegar a Buckingham antes de las 11:00 para agarrar buen lugar en el Cambio de Guardia. St James's Park en el medio corta el caos turístico.",
+    banner:"👑 Día intenso: 14 paradas. Salir a las 9:30. Llegar a Buckingham ANTES de las 11:00. St James's Park en el medio corta el caos turístico — no saltearlo. Piccadilly Circus y Carnaby Street son opcionales.",
     stops:[
-      {time:"9:30",  title:"Metro a Westminster", address:"Paddington Station → Westminster", notes:"Circle Line o District Line desde Paddington hasta Westminster Station. 15 minutos.", lat:51.5007, lng:-0.1246, tags:[]},
-      {time:"10:00", title:"Big Ben + Palace of Westminster", address:"Westminster Bridge Rd, London SW1A", notes:"Foto perfecta desde la orilla del Támesis con el puente en primer plano. Recorrer la plaza, el puente, los alrededores. 30-50 min.", lat:51.5007, lng:-0.1246, tags:["free"]},
-      {time:"10:50", title:"Westminster Abbey", address:"Dean's Yard, London SW1P 3PA", notes:"A pasos del Parlamento. Ver desde afuera: gratis y vale la foto. Entrar: ~£27/adulto. Decidir según interés del grupo.", lat:51.4994, lng:-0.1273, tags:["pay"]},
-      {time:"11:30", title:"St James's Park", address:"St James's Park, London SW1A", notes:"✏️ Sofía: ESTE PARQUE ES CLAVE. 10 min caminando desde Westminster. Corta el caos turístico antes de Buckingham. El puente azul tiene vistas increíbles.", lat:51.5027, lng:-0.1340, tags:["free","sofia"]},
-      {time:"12:00", title:"Cambio de Guardia — Buckingham Palace", address:"Buckingham Palace, London SW1A 1AA", notes:"OBLIGATORIO. Llegar 10-15 min antes para lugar. En julio hay mucha gente. Dura ~45 minutos. Empieza a las 11:00 — según el horario del día puede variar, verificar online.", lat:51.5014, lng:-0.1419, tags:["free"]},
-      {time:"13:30", title:"Westminster Bridge → South Bank", address:"Westminster Bridge, London SE1", notes:"✏️ Sofía: 'acá empieza probablemente la mejor parte del día.' Cruzar el puente caminando. Vistas de Big Ben, Támesis y London Eye todo junto.", lat:51.5010, lng:-0.1195, tags:["sofia"]},
-      {time:"14:00", title:"South Bank — Paseo ribereño", address:"South Bank, London SE1", notes:"2-3 horas muy tranquilas. Artistas callejeros, puestos, vistas al río, ambiente familiar. Almuerzo aquí. Wahaca Southbank (mexicana), Pizza Pilgrims o Pret A Manger para algo rápido.", lat:51.5065, lng:-0.1143, tags:["eat"]},
-      {time:"16:30", title:"London Eye", address:"Riverside Building, County Hall, SE1 7PB", notes:"Sobre el South Bank, ya están a metros. RESERVAR online con anticipación para 5 personas. ~£26/adulto. Vistas de 360° desde 135m de altura.", lat:51.5032, lng:-0.1195, tags:["book"]},
-      {time:"18:30", title:"Covent Garden", address:"Covent Garden, London WC2", notes:"Metro desde Waterloo o caminando 20 min. Covent Garden Market, Neal's Yard (patio de colores muy fotogénico), Seven Dials Sundial Pillar. Shows callejeros en julio.", lat:51.5117, lng:-0.1240, tags:[]},
-      {time:"20:00", title:"Piccadilly Circus + vuelta", address:"Piccadilly Circus, London W1", notes:"De paso hacia el metro. Foto rápida y volver a Paddington. Metro desde Piccadilly Circus (Bakerloo Line directa a Paddington, 5 min).", lat:51.5098, lng:-0.1342, tags:[]}
+      {time:"9:30",  title:"Metro a Westminster", address:"Paddington → Westminster Station",
+       notes:"Circle Line o District Line desde Paddington hasta Westminster. 15 min directo. Al salir ya se ve Big Ben desde la escalera del metro.",
+       lat:51.5007, lng:-0.1246, tags:[]},
+      {time:"10:00", title:"Big Ben + Palace of Westminster", address:"Westminster Bridge Rd, SW1A 2PW",
+       notes:"Foto perfecta desde la orilla del Támesis con el puente en primer plano. Recorrer la plaza, el puente y los alrededores. 30-40 min.",
+       lat:51.5007, lng:-0.1246, tags:["free"]},
+      {time:"10:45", title:"St James's Park", address:"St James's Park, London SW1A 2BJ",
+       notes:"✏️ Sofía: ESTE PARQUE ES CLAVE. Corta el caos turístico antes de Buckingham. El puente azul tiene vistas simultáneas al Parlamento y Buckingham — foto única. Hay pelícanos reales en el lago.",
+       lat:51.5027, lng:-0.1340, tags:["free","sofia"]},
+      {time:"11:15", title:"Cambio de Guardia — Buckingham Palace", address:"Buckingham Palace, London SW1A 1AA",
+       notes:"Llegar antes para agarrar buen lugar. En julio hay mucha gente. Dura ~45 min. La banda en vivo toca desde marchas hasta temas de películas. Verificar horario exacto en householddivision.org.uk.",
+       lat:51.5014, lng:-0.1419, tags:["free"]},
+      {time:"12:30", title:"Westminster Abbey", address:"Dean's Yard, London SW1P 3PA",
+       notes:"Gótico medieval impresionante. Ver desde afuera: gratis. Entrar: ~£27/adulto — tumbas de reyes y poetas, lugar de las coronaciones y bodas reales.",
+       lat:51.4994, lng:-0.1273, tags:["pay"]},
+      {time:"13:30", title:"Westminster Bridge → South Bank", address:"Westminster Bridge, London SE1 7PB",
+       notes:"✏️ Sofía: 'acá empieza probablemente la mejor parte del día.' Cruzar el puente caminando. Vistas simultáneas de Big Ben, Támesis y London Eye.",
+       lat:51.5010, lng:-0.1195, tags:["sofia"]},
+      {time:"14:00", title:"South Bank — Paseo ribereño", address:"South Bank, London SE1 8XX",
+       notes:"2-3 horas tranquilas. Artistas callejeros, puestos, vistas al río, ambiente familiar. Almuerzo aquí: Wahaca Southbank (mexicana), Pizza Pilgrims o Pret A Manger.",
+       lat:51.5065, lng:-0.1143, tags:["eat"]},
+      {time:"16:30", title:"London Eye", address:"Riverside Building, County Hall, SE1 7PB",
+       notes:"Ya están a metros en el South Bank. RESERVAR online en londoneye.com. ~£26/adulto. Vistas 360° desde 135m de altura.",
+       lat:51.5032, lng:-0.1195, tags:["book"]},
+      {time:"18:00", title:"Covent Garden Market", address:"Covent Garden, London WC2E 8RF",
+       notes:"Metro desde Waterloo o caminando 20 min. Mercado cubierto victoriano. Shows callejeros de primera en julio.",
+       lat:51.5117, lng:-0.1240, tags:[]},
+      {time:"18:45", title:"Neal's Yard", address:"Neal's Yard, London WC2H 9DP",
+       notes:"Patio colorido y fotogénico escondido a pasos de Covent Garden. Uno de los rincones más lindos del centro. 5 min caminando.",
+       lat:51.5132, lng:-0.1263, tags:[]},
+      {time:"19:15", title:"Seven Dials Sundial Pillar", address:"Seven Dials, London WC2H 9HD",
+       notes:"Plaza con reloj central donde convergen 7 calles. A 2 min de Neal's Yard. Lindo para la foto y el ambiente.",
+       lat:51.5138, lng:-0.1275, tags:[]},
+      {time:"19:45", title:"Piccadilly Circus", address:"Piccadilly Circus, London W1J 9HS",
+       notes:"El cartel luminoso más famoso de Londres. Opcional según energía del grupo.",
+       lat:51.5098, lng:-0.1342, tags:[], optional:true},
+      {time:"20:15", title:"Carnaby Street", address:"Carnaby St, London W1F 9PS",
+       notes:"Calle peatonal histórica con tiendas independientes y ambiente. A 5 min caminando de Piccadilly Circus. Opcional.",
+       lat:51.5136, lng:-0.1398, tags:[], optional:true},
+      {time:"21:00", title:"Vuelta a Paddington", address:"Marlow House, Hallfield Estate, W2 6HL",
+       notes:"Metro Bakerloo Line desde Oxford Circus → Paddington, 5 min directo.",
+       lat:51.5177, lng:-0.1762, tags:[]},
     ]
   },
   {
-    id:3, date:"Vie 17/7", title:"Támesis Este + Museos", subtitle:"Tower Bridge · Sky Garden · Borough Market · British Museum",
-    color:"#4BAE8A",
-    banner:"🌿 Sky Garden: GRATIS pero reservar en skygarden.london con 3-4 semanas de anticipación. Hoy viernes: British Museum y Tate Modern abren hasta las 20:30.",
+    id:4, date:"Sáb 18/7", title:"Sky Garden + Tower Bridge → Heathrow", subtitle:"Vuelo BA XIGTKS — Heathrow T5 18:55 → Roma",
+    color:"#9B7FD4",
+    banner:"✈️ Vuelo a Roma 18:55. Estar en T5 a las 16:30 mínimo. Salir del centro a las 15:00. Elizabeth Line desde Paddington directa a Heathrow T5: 35 min. British Airways opera desde T5.",
     stops:[
-      {time:"9:30",  title:"Metro a Tower Hill", address:"Paddington → Tower Hill", notes:"Circle Line desde Paddington hasta Tower Hill. 20 minutos.", lat:51.5097, lng:-0.0766, tags:[]},
-      {time:"10:00", title:"Tower Bridge", address:"Tower Bridge Rd, London SE1 2UP", notes:"Ver desde afuera: gratis y espectacular. Si reservaron, subir a las pasarelas de vidrio (~£14/adulto). Abre 9:30h.", lat:51.5055, lng:-0.0754, tags:["book"]},
-      {time:"11:00", title:"Sky Garden", address:"1 Sky Garden Walk, London EC3M 8AF", notes:"5 min caminando de Tower Bridge. Jardín en terraza del rascacielos más alto del barrio. Vistas panorámicas completas de Londres. GRATIS con reserva previa obligatoria en skygarden.london.", lat:51.5112, lng:-0.0835, tags:["free","book"]},
-      {time:"13:00", title:"Borough Market", address:"8 Southwark St, London SE1 1TL", notes:"10 min caminando. Las frutillas con chocolate son el clásico del mercado. Fish & chips. Ambiente increíble. Cerrado los lunes. Abre hasta 17:00.", lat:51.5056, lng:-0.0905, tags:["eat"]},
-      {time:"14:30", title:"Tate Modern", address:"Bankside, London SE1 9TG", notes:"A pasos del Borough Market. GRATIS. Colección permanente de arte moderno. Subir al piso 10 para vistas espectaculares sobre el Támesis y St. Paul's. Viernes abre hasta 21:00.", lat:51.5076, lng:-0.0994, tags:["free"]},
-      {time:"16:00", title:"St Paul's Cathedral", address:"St. Paul's Churchyard, London EC4M 8AD", notes:"5 min caminando de Tate. Ver desde afuera: gratis y muy impresionante. Entrar: ~£25/adulto (incluye la galería del susurro y la cúpula).", lat:51.5138, lng:-0.0984, tags:["pay"]},
-      {time:"17:00", title:"The British Museum", address:"Great Russell St, London WC1B 3DG", notes:"Metro a Holborn o Tottenham Court Road (15 min). GRATIS y obligatorio. Momias egipcias, Piedra de Roseta, reliquias de toda la historia humana. Hoy viernes abre hasta 20:30 — aprovechar.", lat:51.5194, lng:-0.1270, tags:["free"]},
-      {time:"20:00", title:"Cena — China Town / Soho", address:"Chinatown, London W1D", notes:"De paso hacia el metro. China Town: muy buena comida y económica. Soho tiene opciones para todos los gustos. Ambiente nocturno muy animado en julio.", lat:51.5115, lng:-0.1313, tags:["eat"]}
-    ]
-  },
-  {
-    id:4, date:"Sáb 18/7", title:"Harrods · Camden · Battersea", subtitle:"Compras · Mercado alternativo · Pink Floyd",
-    color:"#B79AD6",
-    banner:"🛍️ Sábado: mejor día para Camden Town por la tarde (más movimiento) y para Portobello Road si quieren volver a Notting Hill. Battersea abre 10:00-20:00 los sábados.",
-    stops:[
-      {time:"10:00", title:"Harrods — Subsuelo de alimentos", address:"87-135 Brompton Rd, London SW1X 7XL", notes:"OBLIGATORIO el subsuelo de alimentos: una experiencia en sí misma, aunque no compren nada. Abre a las 10:00. El edificio iluminado por fuera también es espectacular.", lat:51.4994, lng:-0.1632, tags:[]},
-      {time:"11:30", title:"Chelsea — Paseo por el barrio", address:"Chelsea, London SW3", notes:"Caminando desde Harrods. Barrio muy british, clase media acomodada. Bueno para caminar, tomar algo y ver el estilo de vida londinense.", lat:51.4882, lng:-0.1749, tags:[]},
-      {time:"13:00", title:"Almuerzo en Chelsea / Knightsbridge", address:"Chelsea / Knightsbridge, London", notes:"La zona tiene muchos cafés y restaurantes de calidad. Buena opción para una comida tranquila antes del ritmo de Camden.", lat:51.4916, lng:-0.1647, tags:["eat"]},
-      {time:"15:00", title:"Camden Town — Mercado", address:"Camden Lock Market, London NW1 8AF", notes:"Metro (Northern Line desde cualquier punto del centro). Ambiente alternativo único. Street food de todo el mundo. Sábado a la tarde es el momento de mayor movimiento y variedad.", lat:51.5412, lng:-0.1462, tags:[]},
-      {time:"17:30", title:"Battersea Power Station", address:"Circus Rd W, Nine Elms, London SW11", notes:"La tapa del disco Animal de Pink Floyd. Metro Northern Line → Clapham North + bus, o Northern Line → Stockwell + Victoria Line → Vauxhall + 10 min bus. Shopping + restaurantes adentro. Impresionante por fuera.", lat:51.4820, lng:-0.1445, tags:[]},
-      {time:"19:30", title:"Cena y vuelta a Paddington", address:"Paddington, London W2", notes:"Última noche en Londres. Cena en cualquier pub del camino de vuelta. El sistema de transporte de Londres funciona tarde — sin apuros para volver.", lat:51.5163, lng:-0.1762, tags:["eat"]}
+      {time:"9:00",  title:"Metro a la zona de Sky Garden", address:"Paddington → Tower Hill",
+       notes:"Circle Line desde Paddington hasta Tower Hill. 20 min. Maletas: dejar en el hotel hasta las 14:30 o usar consigna en Paddington Station (lockers automáticos 24h).",
+       lat:51.5097, lng:-0.0766, tags:[],
+       infografia:{
+         title:"De Paddington a Tower Bridge — Solo 25 min, sin transbordos",
+         steps:["Toman el metro en Paddington Station","Circle Line o District Line → Dirección Este","Bajan en Tower Hill (parada aquí)","Caminan 5 minutos hacia el río","¡Tower Bridge a la vista!"],
+         caption:"Circle Line o District Line directa desde Paddington. Sin cambios."
+       }},
+      {time:"10:00", title:"Desayuno en Sky Garden", address:"1 Sky Garden Walk, London EC3M 8AF",
+       notes:"Jardín en la terraza del 'Walkie Talkie' a 35 pisos de altura. Vistas panorámicas 360° de toda Londres. GRATIS con reserva obligatoria en skygarden.london. Darwin Brasserie hace desayunos dentro del jardín — o disfrutar las vistas con algo comprado antes.",
+       lat:51.5112, lng:-0.0835, tags:["free","book"]},
+      {time:"11:00", title:"Tower Bridge", address:"Tower Bridge Rd, London SE1 2UP",
+       notes:"5 min caminando desde Sky Garden. Ver desde afuera: gratis y espectacular. Si reservaron en towerbridge.org.uk, subir a las pasarelas de vidrio a 42m de altura (~£14/adulto). Abre 9:30h.",
+       lat:51.5055, lng:-0.0754, tags:["book"]},
+      {time:"12:00", title:"Borough Market + almuerzo", address:"8 Southwark St, London SE1 1TL",
+       notes:"10 min caminando. Mercado gastronómico histórico desde 1014. Frutillas con chocolate — el clásico. Fish & chips de los mejores de la ciudad. Última comida en Londres.",
+       lat:51.5056, lng:-0.0905, tags:["eat"]},
+      {time:"13:30", title:"Tate Modern + St Paul's Cathedral", address:"Bankside, London SE1 9TG",
+       notes:"Tate Modern: GRATIS. Subir al piso 10 para vistas del Támesis y St Paul's — 30 min máximo. St Paul's a 5 min por el Millennium Bridge: fachada y cúpula impresionantes desde afuera.",
+       lat:51.5076, lng:-0.0994, tags:["free"]},
+      {time:"14:45", title:"Vuelta a Paddington + maletas", address:"Marlow House, Hallfield Estate, W2 6HL",
+       notes:"Metro desde Blackfriars o St Paul's hasta Paddington (Circle/District Line, ~15 min). Retirar maletas del hotel.",
+       lat:51.5177, lng:-0.1762, tags:[]},
+      {time:"15:30", title:"Elizabeth Line → Heathrow T5", address:"Paddington Station, London W2 1HQ",
+       notes:"Elizabeth Line directa: T2/T3 en 27 min, T5 en 35 min. Frecuencia cada 10-15 min. Costo: ~£12.80/adulto. Confirmar terminal del vuelo BA XIGTKS — British Airways opera desde T5.",
+       lat:51.5163, lng:-0.1755, tags:["key"]},
+      {time:"16:30", title:"Heathrow T5 — Check-in British Airways", address:"Heathrow Airport Terminal 5, TW6 2GA",
+       notes:"T5 es exclusivamente BA: moderno y bien organizado. Seguridad puede demorar 20-30 min. Vuelo BA → Roma: salida 18:55. Reserva: XIGTKS. ¡Hasta Roma!",
+       lat:51.4724, lng:-0.4533, tags:[], special:true},
     ]
   }
 ];
@@ -136,6 +228,8 @@ const TAG_HTML={
   pay:'<span class="tag tag-pay">PAGO</span>',
   eat:'<span class="tag tag-eat">COMER</span>',
   sofia:'<span class="tag tag-sofia">✏️ SOFÍA</span>',
+  key:'<span class="tag tag-key">⭐ CLAVE</span>',
+  opt:'<span class="tag tag-opt">OPCIONAL</span>',
 };
 
 let map,layer;
@@ -147,6 +241,15 @@ function initMap(){
 function pin(h){return L.divIcon({html:h,className:'',iconSize:[26,26],iconAnchor:[13,13]});}
 function gmaps(fLat,fLng,tLat,tLng){
   return `https://www.google.com/maps/dir/?api=1&origin=${fLat},${fLng}&destination=${tLat},${tLng}&travelmode=walking`;
+}
+
+function infografiaHTML(inf, color){
+  const items = inf.steps.map((s,i)=>`<li>${s}</li>`).join('');
+  return `<div class="infografia" style="border-color:${color}">
+    <div class="inf-title">🗺️ ${inf.title}</div>
+    <ol>${items}</ol>
+    <div class="inf-cap">${inf.caption}</div>
+  </div>`;
 }
 
 function renderDay(idx){
@@ -162,26 +265,32 @@ function renderDay(idx){
   day.stops.forEach((s,i)=>{
     const m=L.marker([s.lat,s.lng],{icon:pin(`<div class="lmarker" style="background:${day.color}">${i+1}</div>`)}).addTo(layer);
     const prev0=i===0?HOME:day.stops[i-1];
-    m.bindPopup(`<b>${s.time} · ${s.title.replace(/—/g,'–')}</b><br>${s.address}<br><a href="${gmaps(prev0.lat,prev0.lng,s.lat,s.lng)}" target="_blank">Cómo llegar →</a>`);
+    m.bindPopup(`<b>${s.time} · ${s.title}</b><br>${s.address}<br><a href="${gmaps(prev0.lat,prev0.lng,s.lat,s.lng)}" target="_blank">Cómo llegar →</a>`);
     pts.push([s.lat,s.lng]);
   });
   L.polyline(pts,{color:day.color,weight:3,dashArray:'6,8',opacity:.85}).addTo(layer);
   map.fitBounds(L.latLngBounds(pts),{padding:[26,26]});
+
   const sch=document.getElementById('schedule');
   sch.innerHTML='';
   day.stops.forEach((s,i)=>{
     const prev=i===0?HOME:day.stops[i-1];
     const prevName=i===0?'el hotel':'parada '+i;
     const el=document.createElement('div');
-    el.className='stop'+(s.special?' special':'');
+    let cls='stop';
+    if(s.special) cls+=' special';
+    if(s.optional) cls+=' optional';
+    el.className=cls;
     const badge=document.createElement('div');
     badge.className='badge';
     badge.textContent=i+1;
-    const tagsHtml=(s.tags||[]).map(t=>TAG_HTML[t]||'').join('');
+    const allTags=[...(s.tags||[])];
+    if(s.optional) allTags.push('opt');
+    const tagsHtml=allTags.map(t=>TAG_HTML[t]||'').join('');
     const col=document.createElement('div');
     col.innerHTML=`
       <div class="time">${s.time}</div>
-      <h3>${s.title.replace(/—/g,'&mdash;')}</h3>
+      <h3>${s.title}</h3>
       <div class="addr">${s.address}</div>
       <p class="notes">${s.notes}</p>
       ${tagsHtml?`<div class="tags">${tagsHtml}</div>`:''}
@@ -191,6 +300,12 @@ function renderDay(idx){
     el.appendChild(badge);
     el.appendChild(col);
     sch.appendChild(el);
+    // infografia inmediatamente despues
+    if(s.infografia){
+      const inf=document.createElement('div');
+      inf.innerHTML=infografiaHTML(s.infografia, day.color);
+      sch.appendChild(inf.firstChild);
+    }
   });
 }
 
